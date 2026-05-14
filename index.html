@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,6 +71,34 @@
   .detail-img-placeholder{width:100%;aspect-ratio:16/7;background:#f0f0ee;margin-bottom:48px;display:flex;align-items:center;justify-content:center;}
   .detail-img-placeholder span{font-size:10px;letter-spacing:0.12em;color:#ccc;font-family:'Helvetica Neue',sans-serif;text-transform:uppercase;}
   .detail-body p{font-size:14px;line-height:1.9;color:#555;font-family:'Helvetica Neue',sans-serif;margin-bottom:20px;max-width:560px;}
+
+  /* ── Mobile: sidebar becomes top bar ── */
+  @media (max-width:639px){
+    #sidebar{
+      width:100%;min-width:0;height:56px;
+      flex-direction:row;align-items:center;justify-content:space-between;
+      padding:0 20px;
+      border-right:none;border-bottom:1px solid #e8e8e8;
+    }
+    .logo{display:flex;flex-direction:row;align-items:center;gap:4px;font-size:13px;}
+    .logo br{display:none;}
+    nav{flex-direction:row;gap:12px;flex-wrap:wrap;justify-content:flex-end;}
+    nav a{font-size:10px;line-height:1.5;}
+    .sfoot{display:none;}
+    #main{margin-left:0;margin-top:56px;height:calc(100vh - 56px);}
+    #detail-overlay{left:0;top:56px;padding:32px 20px;}
+    section{padding:40px 20px;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .detail-title{font-size:32px;margin-bottom:20px;}
+    .about-wrap h2{font-size:26px;}
+    .detail-meta{gap:20px;flex-wrap:wrap;}
+    .detail-img-placeholder{aspect-ratio:4/3;}
+  }
+  @media (max-width:400px){
+    .grid{grid-template-columns:1fr;}
+    nav{gap:8px;}
+    nav a{font-size:9px;}
+  }
 </style>
 </head>
 <body>
@@ -77,7 +106,7 @@
 <div id="canvas-wrap"><canvas id="bg"></canvas></div>
 
 <div id="sidebar">
-  <div class="logo">Tanishq<br/>Bajpai</div>
+  <div class="logo"><span>Tanishq</span><br/><span>Bajpai</span></div>
   <nav>
     <a href="#projects" data-target="projects">Projects</a>
     <a href="#sidequests" data-target="sidequests">Side Quests</a>
