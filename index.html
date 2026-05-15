@@ -6,37 +6,46 @@
 <title>Tanishq Bajpai</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{height:100%;background:#fff;font-family:'Times New Roman',Times,serif;}
-  body{display:flex;overflow:hidden;}
+  html,body{height:100%;font-family:'Times New Roman',Times,serif;}
+  body{display:flex;overflow:hidden;background:#f5f4f0;}
 
   #sidebar{
     width:160px;min-width:160px;height:100vh;position:fixed;top:0;left:0;
     display:flex;flex-direction:column;justify-content:space-between;
-    padding:36px 24px;border-right:1px solid #e8e8e8;z-index:100;background:rgba(255,255,255,0.92);
-    backdrop-filter:blur(8px);
+    padding:36px 24px;border-right:1px solid rgba(0,0,0,0.08);z-index:100;
+    background:rgba(255,255,255,0.75);backdrop-filter:blur(14px);
   }
+
+  .logo-wrap{display:flex;flex-direction:column;gap:6px;}
   .logo{font-size:15px;letter-spacing:0.01em;color:#111;line-height:1.5;font-family:'Helvetica Neue',sans-serif;font-weight:600;}
+
+  /* cycling word */
+  .word-cycle{
+    font-size:10px;font-family:'Helvetica Neue',sans-serif;font-weight:400;
+    letter-spacing:0.08em;color:#aaa;
+    height:14px;overflow:hidden;position:relative;
+  }
+  .word-cycle span{
+    display:block;position:absolute;left:0;top:0;
+    opacity:0;transform:translateY(6px);
+    transition:opacity 0.35s ease, transform 0.35s ease;
+    white-space:nowrap;
+  }
+  .word-cycle span.active{
+    opacity:1;transform:translateY(0);
+  }
+  .word-cycle span.exit{
+    opacity:0;transform:translateY(-6px);
+  }
+
   nav{display:flex;flex-direction:column;gap:2px;}
   nav a{font-size:12px;font-weight:400;color:#bbb;text-decoration:none;font-family:'Helvetica Neue',sans-serif;letter-spacing:0.03em;line-height:2;cursor:pointer;transition:color 0.25s;}
   nav a.active{color:#111;}
   nav a:hover{color:#555;}
   .sfoot{font-size:9px;color:#ccc;letter-spacing:0.06em;font-family:'Helvetica Neue',sans-serif;}
 
-  /* gradient background via CSS — no canvas */
-  body::before{
-    content:'';
-    position:fixed;inset:0;z-index:0;
-    background:
-      radial-gradient(ellipse 70% 60% at var(--bx1,20%) var(--by1,30%), hsla(220,30%,88%,0.9) 0%, transparent 70%),
-      radial-gradient(ellipse 65% 55% at var(--bx2,80%) var(--by2,65%), hsla(38,35%,88%,0.85) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 50% at var(--bx3,55%) var(--by3,10%), hsla(190,28%,89%,0.8) 0%, transparent 70%),
-      radial-gradient(ellipse 55% 50% at var(--bx4,10%) var(--by4,80%), hsla(28,30%,88%,0.8) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 55% at var(--bx5,90%) var(--by5,20%), hsla(270,20%,90%,0.75) 0%, transparent 70%),
-      radial-gradient(ellipse 58% 52% at var(--bx6,45%) var(--by6,90%), hsla(160,22%,89%,0.78) 0%, transparent 70%);
-    background-color:#f9f8f6;
-    pointer-events:none;
-    transition: --bx1 0.05s, --by1 0.05s;
-  }
+  #canvas-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  #bg{display:block;width:100%;height:100%;}
 
   #main{margin-left:160px;flex:1;overflow-y:auto;overflow-x:hidden;height:100vh;position:relative;z-index:5;scroll-behavior:smooth;}
 
@@ -47,36 +56,28 @@
 
   .card{
     aspect-ratio:1;
-    background:rgba(248,247,245,0.55);
+    background:rgba(255,255,255,0.38);
+    border:1px solid rgba(255,255,255,0.6);
     display:flex;flex-direction:column;justify-content:flex-end;padding:16px;
     cursor:pointer;position:relative;overflow:hidden;
-    transition:
-      transform 0.45s cubic-bezier(0.23,1,0.32,1),
-      background 0.45s cubic-bezier(0.23,1,0.32,1),
-      box-shadow 0.45s cubic-bezier(0.23,1,0.32,1);
+    transition:transform 0.5s cubic-bezier(0.23,1,0.32,1),
+               background 0.5s cubic-bezier(0.23,1,0.32,1),
+               box-shadow 0.5s cubic-bezier(0.23,1,0.32,1),
+               border-color 0.5s cubic-bezier(0.23,1,0.32,1);
     will-change:transform;
-    backdrop-filter:blur(2px);
-  }
-  .card::before{
-    content:'';
-    position:absolute;inset:0;
-    background:inherit;
-    opacity:0;
-    transition:opacity 0.45s cubic-bezier(0.23,1,0.32,1);
   }
   .card:hover{
-    transform:translateY(-6px) scale(1.025);
-    background:rgba(255,255,255,0.88);
-    box-shadow:0 16px 48px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    transform:translateY(-7px) scale(1.028);
+    background:rgba(255,255,255,0.82);
+    border-color:rgba(255,255,255,0.95);
+    box-shadow:0 20px 56px rgba(0,0,0,0.10),0 3px 10px rgba(0,0,0,0.05);
     z-index:10;
   }
-
   .card-num{position:absolute;top:14px;left:14px;font-size:9px;color:#bbb;font-family:'Helvetica Neue',sans-serif;letter-spacing:0.1em;transition:color 0.35s;}
-  .card:hover .card-num{color:#999;}
-  .card h3{font-size:14px;font-weight:400;font-style:italic;color:#111;margin-bottom:4px;line-height:1.2;transition:color 0.35s;}
-  .card:hover h3{color:#000;}
+  .card:hover .card-num{color:#888;}
+  .card h3{font-size:14px;font-weight:400;font-style:italic;color:#111;margin-bottom:4px;line-height:1.2;}
   .card p{font-size:9px;color:#999;font-family:'Helvetica Neue',sans-serif;letter-spacing:0.06em;transition:color 0.35s;}
-  .card:hover p{color:#777;}
+  .card:hover p{color:#666;}
 
   .subsection-label{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#bbb;font-family:'Helvetica Neue',sans-serif;margin:56px 0 24px;}
 
@@ -90,7 +91,7 @@
 
   #detail-overlay{
     display:none;position:fixed;top:0;left:160px;right:0;bottom:0;
-    background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);
+    background:rgba(250,249,247,0.96);backdrop-filter:blur(16px);
     z-index:200;overflow-y:auto;padding:48px 56px;
     animation:fadeIn 0.35s cubic-bezier(0.23,1,0.32,1);
   }
@@ -104,14 +105,15 @@
   .detail-meta{display:flex;gap:40px;margin-bottom:48px;}
   .detail-meta-item label{display:block;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#bbb;font-family:'Helvetica Neue',sans-serif;margin-bottom:4px;}
   .detail-meta-item span{font-size:13px;color:#333;font-family:'Helvetica Neue',sans-serif;}
-  .detail-img-placeholder{width:100%;aspect-ratio:16/7;background:#f0f0ee;margin-bottom:48px;display:flex;align-items:center;justify-content:center;}
+  .detail-img-placeholder{width:100%;aspect-ratio:16/7;background:#efefed;margin-bottom:48px;display:flex;align-items:center;justify-content:center;}
   .detail-img-placeholder span{font-size:10px;letter-spacing:0.12em;color:#ccc;font-family:'Helvetica Neue',sans-serif;text-transform:uppercase;}
   .detail-body p{font-size:14px;line-height:1.9;color:#555;font-family:'Helvetica Neue',sans-serif;margin-bottom:20px;max-width:560px;}
 
-  @media (max-width:639px){
+  @media(max-width:639px){
     #sidebar{width:100%;min-width:0;height:56px;flex-direction:row;align-items:center;justify-content:space-between;padding:0 20px;border-right:none;border-bottom:1px solid #e8e8e8;}
-    .logo{display:flex;flex-direction:row;align-items:center;gap:4px;font-size:13px;}
-    .logo br{display:none;}
+    .logo-wrap{flex-direction:row;align-items:center;gap:8px;}
+    .logo{font-size:13px;}
+    .word-cycle{height:13px;}
     nav{flex-direction:row;gap:12px;flex-wrap:wrap;justify-content:flex-end;}
     nav a{font-size:10px;line-height:1.5;}
     .sfoot{display:none;}
@@ -124,7 +126,7 @@
     .detail-meta{gap:20px;flex-wrap:wrap;}
     .detail-img-placeholder{aspect-ratio:4/3;}
   }
-  @media (max-width:400px){
+  @media(max-width:400px){
     .grid{grid-template-columns:1fr;}
     nav{gap:8px;}
     nav a{font-size:9px;}
@@ -133,8 +135,17 @@
 </head>
 <body>
 
+<div id="canvas-wrap"><canvas id="bg"></canvas></div>
+
 <div id="sidebar">
-  <div class="logo"><span>Tanishq</span><br/><span>Bajpai</span></div>
+  <div class="logo-wrap">
+    <div class="logo"><span>Tanishq</span><br/><span>Bajpai</span></div>
+    <div class="word-cycle" id="wordCycle">
+      <span>Architect</span>
+      <span>Creative</span>
+      <span>Curious</span>
+    </div>
+  </div>
   <nav>
     <a href="#projects" data-target="projects">Projects</a>
     <a href="#sidequests" data-target="sidequests">Side Quests</a>
@@ -195,14 +206,14 @@
 <script>
 /* ── Project data ── */
 const projectData = {
-  p1:{tag:"Project 01",title:"How to move?",year:"2024",type:"Urban Mobility",body:"An investigation into the choreography of movement within dense urban fabric. This project questions the hierarchy of vehicles over people, proposing a reimagined street section where pedestrian rhythm, cycling infrastructure, and transit nodes coexist in spatial tension. The design draws from desire lines, pedestrian behaviour studies, and the idea that movement itself is an architectural experience."},
-  p2:{tag:"Project 02",title:"House of Courtyards",year:"2024",type:"Residential",body:"A residence organised around a series of interlocking courtyards — each one carving light and air into the plan. The project revives the typology of the haveli while stripping it of nostalgia, replacing ornamentation with void and material honesty. Courtyards become social mediators: the boundary between inside and outside dissolves room by room."},
-  p3:{tag:"Project 03",title:"Residence, Commerce & Landmark",year:"2023",type:"Mixed Use",body:"A vertical mixed-use intervention that attempts to reconcile the conflicting demands of living, working, and civic identity within a single building. The project proposes a permeable ground floor that bleeds into the public realm, stacked above by residential typologies that each respond to orientation, privacy, and community."},
-  p4:{tag:"Project 04",title:"Feel Safe",year:"2023",type:"Public Space",body:"A public space project rooted in the question of who feels safe in a city and why. Mapping the experience of vulnerability across different bodies in urban space, the design proposes interventions — light, ground texture, sightlines, seating — that rebuild a sense of belonging and security for those historically excluded from public life."},
-  p5:{tag:"Project 05",title:"Malhaar",year:"2022",type:"Cultural",body:"A cultural centre conceived around the Raag Malhaar — the monsoon raga of Hindustani classical music. The spatial sequence mimics the raga's structure: an aalap of arrival, a gradual building of program and light, culminating in an open courtyard that releases into sky. Materials are raw, wet, and resonant."},
-  s1:{tag:"Side Quest I",title:"Faces of Kanpur",year:"Ongoing",type:"Photography",body:"A long-running photographic study of the people, labour, and textures of Kanpur — a city of tanneries, textile mills, and contradictions. Shot on film and digital, the project documents the faces that the city's industrial identity erases from its own narrative. An archive of the human grain beneath the urban surface."},
-  s2:{tag:"Side Quest II",title:"Rumitecture",year:"2024",type:"Research & Writing",body:"An exploration of the spatial imagination embedded in the poetry of Rumi. Reading architecture through mystical verse — thresholds as longing, courtyards as the self, walls as separation and return. Rumitecture proposes a design vocabulary drawn not from formal precedents but from the phenomenology of spiritual poetry."},
-  s3:{tag:"Side Quest III",title:"Expressionist Cinema Architecture",year:"2023",type:"Essay",body:"A critical essay examining German Expressionist cinema — The Cabinet of Dr. Caligari, Nosferatu, Metropolis — as an architectural practice. The distorted sets, shadow-heavy spaces, and oblique geometries are read not as backdrop but as protagonists. The essay argues that these films offer an alternative architectural lineage rooted in emotion, dread, and the subconscious."},
+  p1:{tag:"Project 01",title:"How to move?",year:"2024",type:"Urban Mobility",body:"An investigation into the choreography of movement within dense urban fabric. This project questions the hierarchy of vehicles over people, proposing a reimagined street section where pedestrian rhythm, cycling infrastructure, and transit nodes coexist in spatial tension."},
+  p2:{tag:"Project 02",title:"House of Courtyards",year:"2024",type:"Residential",body:"A residence organised around a series of interlocking courtyards — each one carving light and air into the plan. The project revives the typology of the haveli while stripping it of nostalgia, replacing ornamentation with void and material honesty."},
+  p3:{tag:"Project 03",title:"Residence, Commerce & Landmark",year:"2023",type:"Mixed Use",body:"A vertical mixed-use intervention that attempts to reconcile the conflicting demands of living, working, and civic identity within a single building."},
+  p4:{tag:"Project 04",title:"Feel Safe",year:"2023",type:"Public Space",body:"A public space project rooted in the question of who feels safe in a city and why. The design proposes interventions — light, ground texture, sightlines, seating — that rebuild a sense of belonging."},
+  p5:{tag:"Project 05",title:"Malhaar",year:"2022",type:"Cultural",body:"A cultural centre conceived around the Raag Malhaar — the monsoon raga of Hindustani classical music. The spatial sequence mimics the raga's structure: an aalap of arrival, a gradual building of program and light."},
+  s1:{tag:"Side Quest I",title:"Faces of Kanpur",year:"Ongoing",type:"Photography",body:"A long-running photographic study of the people, labour, and textures of Kanpur — a city of tanneries, textile mills, and contradictions."},
+  s2:{tag:"Side Quest II",title:"Rumitecture",year:"2024",type:"Research & Writing",body:"An exploration of the spatial imagination embedded in the poetry of Rumi. Reading architecture through mystical verse — thresholds as longing, courtyards as the self, walls as separation and return."},
+  s3:{tag:"Side Quest III",title:"Expressionist Cinema Architecture",year:"2023",type:"Essay",body:"A critical essay examining German Expressionist cinema as an architectural practice. The distorted sets, shadow-heavy spaces, and oblique geometries are read not as backdrop but as protagonists."},
 };
 
 document.querySelectorAll('.card[data-detail]').forEach(card => {
@@ -216,13 +227,12 @@ document.querySelectorAll('.card[data-detail]').forEach(card => {
     document.getElementById('detail-overlay').classList.add('open');
   });
 });
-
 document.getElementById('back-btn').addEventListener('click', () => {
   document.getElementById('detail-overlay').classList.remove('open');
 });
 
-/* ── Nav scroll spy ── */
-const main = document.getElementById('main');
+/* ── Nav ── */
+const mainEl = document.getElementById('main');
 const sections = [
   {id:'projects',   el:document.getElementById('projects')},
   {id:'sidequests', el:document.getElementById('sidequests')},
@@ -232,47 +242,158 @@ const sections = [
 const navLinks = document.querySelectorAll('nav a');
 function updateNav(){
   let current = sections[0].id;
-  sections.forEach(s => { if(main.scrollTop >= s.el.offsetTop - 120) current = s.id; });
+  sections.forEach(s => { if(mainEl.scrollTop >= s.el.offsetTop - 120) current = s.id; });
   navLinks.forEach(a => a.classList.toggle('active', a.dataset.target === current));
 }
-main.addEventListener('scroll', updateNav);
+mainEl.addEventListener('scroll', updateNav);
 updateNav();
 navLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
     const t = document.getElementById(a.dataset.target);
-    if(t) main.scrollTo({top: t.offsetTop, behavior:'smooth'});
+    if(t) mainEl.scrollTo({top: t.offsetTop, behavior:'smooth'});
   });
 });
 
-/* ── Animated gradient background ── */
-// Six colour blobs drifting in normalised 0..1 space,
-// applied to CSS custom properties on body::before
-const root = document.documentElement;
+/* ── Word cycler ── */
+(function(){
+  const spans = document.querySelectorAll('#wordCycle span');
+  let current = 0;
+  spans[current].classList.add('active');
+  setInterval(() => {
+    const prev = current;
+    current = (current + 1) % spans.length;
+    spans[prev].classList.remove('active');
+    spans[prev].classList.add('exit');
+    setTimeout(() => spans[prev].classList.remove('exit'), 400);
+    spans[current].classList.add('active');
+  }, 1800);
+})();
 
-const blobs = [
-  { x:0.20, y:0.30, vx: 0.00020, vy: 0.00013 },
-  { x:0.80, y:0.65, vx:-0.00016, vy: 0.00010 },
-  { x:0.55, y:0.08, vx: 0.00012, vy: 0.00018 },
-  { x:0.08, y:0.82, vx: 0.00022, vy:-0.00012 },
-  { x:0.90, y:0.18, vx:-0.00018, vy: 0.00015 },
-  { x:0.42, y:0.92, vx:-0.00011, vy:-0.00017 },
-];
+/* ══════════════════════════════════════════
+   WebGL gradient-pattern background
+   Opacity reduced by 30% via shader alpha
+══════════════════════════════════════════ */
+const canvas = document.getElementById('bg');
+const gl = canvas.getContext('webgl', {antialias:false, alpha:false});
 
-let tick = 0;
-(function animateGradient(){
-  requestAnimationFrame(animateGradient);
-  tick++;
-  blobs.forEach((b, i) => {
-    b.x += b.vx + Math.sin(tick * 0.005 + i * 1.4) * 0.00022;
-    b.y += b.vy + Math.cos(tick * 0.007 + i * 0.9) * 0.00016;
-    if(b.x < -0.1) b.vx =  Math.abs(b.vx);
-    if(b.x >  1.1) b.vx = -Math.abs(b.vx);
-    if(b.y < -0.1) b.vy =  Math.abs(b.vy);
-    if(b.y >  1.1) b.vy = -Math.abs(b.vy);
-    root.style.setProperty(`--bx${i+1}`, `${(b.x*100).toFixed(2)}%`);
-    root.style.setProperty(`--by${i+1}`, `${(b.y*100).toFixed(2)}%`);
-  });
+function resize(){
+  canvas.width  = Math.floor(window.innerWidth  / 2);
+  canvas.height = Math.floor(window.innerHeight / 2);
+  canvas.style.width  = window.innerWidth  + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  gl.viewport(0, 0, canvas.width, canvas.height);
+}
+window.addEventListener('resize', resize);
+resize();
+
+const VS = `
+attribute vec2 a_pos;
+void main(){gl_Position=vec4(a_pos,0.,1.);}
+`;
+
+/* Gradient reduced 30%: sat capped lower, lite pushed higher, blend with white */
+const FS = `
+precision mediump float;
+uniform vec2  u_res;
+uniform float u_time;
+uniform vec2  u_mouse;
+
+#define PI 3.14159265
+
+vec3 hsl(float h, float s, float l){
+  h=mod(h,1.);
+  float r=abs(h*6.-3.)-1.;
+  float g=2.-abs(h*6.-2.);
+  float b=2.-abs(h*6.-4.);
+  vec3 rgb=clamp(vec3(r,g,b),0.,1.);
+  return l+s*(rgb-.5)*(1.-abs(2.*l-1.));
+}
+
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),
+             mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 p  = (uv-.5)*vec2(u_res.x/u_res.y,1.);
+  float t = u_time*0.18;
+
+  float a1 = sin(p.x*2.1+t*0.7)*cos(p.y*1.8-t*0.5);
+  float a2 = sin(p.x*1.4-t*0.4+p.y*2.3)*0.7;
+  float a3 = cos(length(p*1.6)-t*0.9)*0.8;
+
+  vec2 c1=vec2(sin(t*.31)*.5,cos(t*.24)*.4);
+  vec2 c2=vec2(cos(t*.19)*.55,sin(t*.37)*.45);
+  vec2 c3=vec2(sin(t*.27+1.)*.4,sin(t*.21+2.)*.5);
+  vec2 c4=vec2(cos(t*.14+3.)*.6,cos(t*.33+1.)*.35);
+
+  float b1=exp(-dot(p-c1,p-c1)*2.8);
+  float b2=exp(-dot(p-c2,p-c2)*2.2);
+  float b3=exp(-dot(p-c3,p-c3)*3.2);
+  float b4=exp(-dot(p-c4,p-c4)*2.5);
+
+  vec2 mp=(u_mouse-.5)*vec2(u_res.x/u_res.y,1.);
+  float mw=exp(-dot(p-mp,p-mp)*5.)*0.55;
+
+  float field=a1*.28+a2*.22+a3*.20+b1*.55+b2*.50+b3*.48+b4*.45+mw;
+  field+=noise(p*6.+t*.3)*.06-.03;
+
+  float hue =0.08+field*0.38+sin(t*0.12)*0.06;
+  /* sat & lightness adjusted: colours 30% more washed out → closer to white */
+  float sat =( 0.18+smoothstep(0.,1.,field)*0.16 )*0.70;
+  float lite=mix(0.88-smoothstep(0.,1.,field)*0.10, 1.0, 0.30);
+
+  vec3 col=hsl(hue,sat,lite);
+  /* final blend toward white by 30% */
+  col=mix(col,vec3(1.),0.30);
+
+  gl_FragColor=vec4(col,1.);
+}
+`;
+
+function makeShader(type,src){
+  const s=gl.createShader(type);
+  gl.shaderSource(s,src);
+  gl.compileShader(s);
+  return s;
+}
+const prog=gl.createProgram();
+gl.attachShader(prog,makeShader(gl.VERTEX_SHADER,VS));
+gl.attachShader(prog,makeShader(gl.FRAGMENT_SHADER,FS));
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+const buf=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+const loc=gl.getAttribLocation(prog,'a_pos');
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+const uRes=gl.getUniformLocation(prog,'u_res');
+const uTime=gl.getUniformLocation(prog,'u_time');
+const uMouse=gl.getUniformLocation(prog,'u_mouse');
+
+let mx=0.5,my=0.5,tmx=0.5,tmy=0.5;
+window.addEventListener('mousemove',e=>{
+  tmx=e.clientX/window.innerWidth;
+  tmy=1-e.clientY/window.innerHeight;
+});
+
+let start=performance.now();
+(function frame(){
+  requestAnimationFrame(frame);
+  mx+=(tmx-mx)*.05; my+=(tmy-my)*.05;
+  const t=(performance.now()-start)*.001;
+  gl.uniform2f(uRes,canvas.width,canvas.height);
+  gl.uniform1f(uTime,t);
+  gl.uniform2f(uMouse,mx,my);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 })();
 </script>
 </body>
