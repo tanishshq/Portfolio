@@ -85,6 +85,52 @@
   .about-wrap h2{font-size:38px;font-weight:400;font-style:italic;color:#111;margin-bottom:20px;line-height:1.2;}
   .about-wrap p{font-size:13px;line-height:1.9;color:#555;font-family:'Helvetica Neue',sans-serif;margin-bottom:16px;}
 
+  /* ── About section ── */
+  #about{
+    padding:64px 48px 0;
+    /* no min-height — SVG dictates its own height, no empty space below */
+  }
+
+  #about-svg{
+    display:block;
+    width:100%;
+    height:auto;
+    margin-top:-32px;
+  }
+
+  .tl-hit{ stroke:transparent; stroke-width:24; fill:none; cursor:default; }
+  .tl-line{
+    stroke:#000; stroke-width:0.7; fill:none; pointer-events:none;
+    transition:stroke-width 0.4s ease, opacity 0.4s ease;
+  }
+  .tl-group:hover .tl-line{ stroke-width:1.8; opacity:0.45; }
+
+  @media(max-width:639px){
+    #sidebar{width:100%;min-width:0;height:56px;flex-direction:row;align-items:center;justify-content:space-between;padding:0 20px;border-right:none;border-bottom:1px solid #e8e8e8;}
+    .logo-wrap{flex-direction:row;align-items:center;gap:8px;}
+    .logo{font-size:13px;}
+    .word-cycle{height:13px;}
+    nav{flex-direction:row;gap:12px;flex-wrap:wrap;justify-content:flex-end;}
+    nav a{font-size:10px;line-height:1.5;}
+    .sfoot{display:none;}
+    #main{margin-left:0;margin-top:56px;height:calc(100vh - 56px);}
+    #detail-overlay{left:0;top:56px;padding:32px 20px;}
+    section{padding:40px 20px;}
+    #about{padding:40px 0 0;}
+    #about .section-label{padding:0 20px;}
+    #about-svg{margin-top:-16px;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .detail-title{font-size:32px;margin-bottom:20px;}
+    .about-wrap h2{font-size:26px;}
+    .detail-meta{gap:20px;flex-wrap:wrap;}
+    .detail-img-placeholder{aspect-ratio:4/3;}
+  }
+  @media(max-width:400px){
+    .grid{grid-template-columns:1fr;}
+    nav{gap:8px;}
+    nav a{font-size:9px;}
+  }
+
   .contact-line{font-size:17px;font-style:italic;color:#111;margin-bottom:10px;}
   .contact-line a{color:#111;text-decoration:none;border-bottom:1px solid #e0e0e0;transition:border-color 0.2s;}
   .contact-line a:hover{border-color:#111;}
@@ -109,23 +155,6 @@
   .detail-img-placeholder span{font-size:10px;letter-spacing:0.12em;color:#ccc;font-family:'Helvetica Neue',sans-serif;text-transform:uppercase;}
   .detail-body p{font-size:14px;line-height:1.9;color:#555;font-family:'Helvetica Neue',sans-serif;margin-bottom:20px;max-width:560px;}
 
-  @media(max-width:639px){
-    #sidebar{width:100%;min-width:0;height:56px;flex-direction:row;align-items:center;justify-content:space-between;padding:0 20px;border-right:none;border-bottom:1px solid #e8e8e8;}
-    .logo-wrap{flex-direction:row;align-items:center;gap:8px;}
-    .logo{font-size:13px;}
-    .word-cycle{height:13px;}
-    nav{flex-direction:row;gap:12px;flex-wrap:wrap;justify-content:flex-end;}
-    nav a{font-size:10px;line-height:1.5;}
-    .sfoot{display:none;}
-    #main{margin-left:0;margin-top:56px;height:calc(100vh - 56px);}
-    #detail-overlay{left:0;top:56px;padding:32px 20px;}
-    section{padding:40px 20px;}
-    .grid{grid-template-columns:repeat(2,1fr);}
-    .detail-title{font-size:32px;margin-bottom:20px;}
-    .about-wrap h2{font-size:26px;}
-    .detail-meta{gap:20px;flex-wrap:wrap;}
-    .detail-img-placeholder{aspect-ratio:4/3;}
-  }
   @media(max-width:400px){
     .grid{grid-template-columns:1fr;}
     nav{gap:8px;}
@@ -175,12 +204,65 @@
 
   <section id="about">
     <div class="section-label">About</div>
-    <div class="about-wrap">
-      <h2>Design at the edge of order.</h2>
-      <p>Tanishq Bajpai is an architect and spatial thinker working across scales — from intimate residences to urban interventions. The work believes architecture should provoke, shelter, and surprise in equal measure.</p>
-      <p>Drawing from postmodern thinking: history is not rejected but remixed, ornament is not a crime but a language, and contradiction is a design tool.</p>
-      <p>Based in Prayagraj. Working globally.</p>
-    </div>
+
+    <svg id="about-svg" viewBox="0 0 1440 760"
+         preserveAspectRatio="xMidYMid meet"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <!-- LINE A: steeper — Speaking top-left → stops exactly at crossing (438,492) -->
+      <g class="tl-group">
+        <line class="tl-hit"  x1="88" y1="220" x2="438" y2="492"/>
+        <line class="tl-line" x1="88" y1="220" x2="438" y2="492"/>
+      </g>
+
+      <!-- LINE B: shallow — starts AT crossing → Graduation bottom-right -->
+      <g class="tl-group">
+        <line class="tl-hit"  x1="438" y1="492" x2="1115" y2="720"/>
+        <line class="tl-line" x1="438" y1="492" x2="1115" y2="720"/>
+      </g>
+
+      <!-- Speaking / Writing / Filming — above Line A start, clear of line -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="88" y="208">
+        <tspan id="tl-speaking">Speaking</tspan>
+      </text>
+
+      <!-- 2019 / Video Editing — below line, offset right of ~30% point on Line A -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="210" y="318">2019</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="210" y="338">Video Editing</text>
+
+      <!-- 2020 / Swaraj — left of Line A at ~55%, text above & left so it doesn't cross line -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="88" y="403">2020</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="88" y="423">Swaraj India Public</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="88" y="443">School</text>
+
+      <!-- 2021 / NIT Raipur — just right of crossing, below the junction -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="452" y="505">2021</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="452" y="525">NIT Raipur</text>
+
+      <!-- 2023 / Documentation — below Line B -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="648" y="584">2023</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="648" y="604">Documentation</text>
+
+      <!-- 2025 / Internship — below Line B -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="800" y="638">2025</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="800" y="658">Internship</text>
+
+      <!-- 2026 / Graduation — below Line B end -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="12" fill="#aaa" x="1020" y="690">2026</text>
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="1020" y="710">Graduation</text>
+
+      <!-- Bio text — top right, starts at y=90 so fully visible -->
+      <text font-family="'Helvetica Neue',sans-serif" font-size="18" fill="#111" x="895" y="90" text-anchor="start">
+        <tspan x="895" dy="0">I design with empathy as method, translating human</tspan>
+        <tspan x="895" dy="26">nuance, psychology, and lived stories into spaces</tspan>
+        <tspan x="895" dy="26">that feel unmistakably authentic.</tspan>
+        <tspan x="895" dy="42">A curious generalist with a sharp eye for patterns</tspan>
+        <tspan x="895" dy="26">and people, I move easily across ideas, disciplines,</tspan>
+        <tspan x="895" dy="26">and conversations while bringing clarity, warmth,</tspan>
+        <tspan x="895" dy="26">and good energy to the table.</tspan>
+      </text>
+
+    </svg>
   </section>
 
   <section id="contact">
@@ -268,6 +350,23 @@ navLinks.forEach(a => {
     setTimeout(() => spans[prev].classList.remove('exit'), 400);
     spans[current].classList.add('active');
   }, 1800);
+})();
+
+/* ── Timeline verb cycler (Speaking → Writing → Filming) ── */
+(function(){
+  const verbs = ['Speaking', 'Writing', 'Filming'];
+  const el = document.getElementById('tl-speaking');
+  if(!el) return;
+  let idx = 0;
+  el.style.transition = 'opacity 0.32s ease';
+  setInterval(() => {
+    el.style.opacity = '0';
+    setTimeout(() => {
+      idx = (idx + 1) % verbs.length;
+      el.textContent = verbs[idx];
+      el.style.opacity = '1';
+    }, 320);
+  }, 2200);
 })();
 
 /* ══════════════════════════════════════════
